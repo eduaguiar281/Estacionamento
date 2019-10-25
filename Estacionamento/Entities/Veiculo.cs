@@ -10,5 +10,7 @@ namespace Estacionamento.Entities
     {
         public string Placa { get; set; }
         public string Descricao { get; set; }
+
+        public virtual ICollection<Movimentacao> Movimentacoes { get; set; }
     }
 }
