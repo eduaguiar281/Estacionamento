@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Estacionamento.DataBase.DataContext
@@ -12,6 +13,8 @@ namespace Estacionamento.DataBase.DataContext
         DbSet<TEntity> Set<TEntity>() where TEntity : EntityBase;
 
         int SaveChanges();
+
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
         string GenerateCreateScript();
 

@@ -14,7 +14,7 @@ namespace Estacionamento.DataBase.DataContext
         public EstacionamentoDataContext(DbContextOptions<EstacionamentoDataContext> options)
             : base(options)
         {
-
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

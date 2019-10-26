@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Estacionamento.DataBase.DataContext;
+using Estacionamento.Entities;
+using Estacionamento.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,10 +28,18 @@ namespace Estacionamento
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<EstacionamentoDataContext>(options =>
+                     options.UseSqlServer(Configuration.GetConnectionString("Default")));
+
+            services.AddTransient<IDataContext, EstacionamentoDataContext>();
+            services.AddTransient<IRepository<Veiculo>, EfRepository<Veiculo>>(); 
+            services.AddTransient<IRepository<Movimentacao>, EfRepository<Movimentacao>>();
+            services.AddTransient<IRepository<TabelaPreco>, EfRepository<TabelaPreco>>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -52,6 +64,7 @@ namespace Estacionamento
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            serviceProvider.GetService<EstacionamentoDataContext>().Database.EnsureCreated();
         }
     }
 }
