@@ -35,8 +35,6 @@ namespace Estacionamento.ViewModel
 
         private void CalculePermanencia()
         {
-
-
             if (!_editMode)
                 return;
             if (!_dataSaida.HasValue)
@@ -44,32 +42,24 @@ namespace Estacionamento.ViewModel
                 Permanencia = 0;
             }
 
-            /*
-             *         
-        DateTime inicio = new DateTime(2019, 10, 28, 18, 26, 35);
-        DateTime final = new DateTime(2019, 10, 28, 22, 37, 45);
+            var tabela = _tabelaPrecoService.GetTabelasAsync(p => p.Inicio >= DataEntrada && p.Fim <= DataEntrada).Result.FirstOrDefault();
 
-        TimeSpan teste = final - inicio;
-        double testevalue = teste.TotalMinutes;
-		Console.WriteLine(testevalue);
-		
-		var qtHoras = Math.Truncate(testevalue /60); 
-		Console.WriteLine(qtHoras);
-		var resto = testevalue % 60;
-	    Console.WriteLine(resto);
-
-             * 
-             */
-
-
-            TimeSpan diferenca = _dataSaida.Value - DataEntrada;
-            Permanencia = diferenca.TotalMinutes;
+            if (tabela == null)
+                throw new ArgumentNullException("Tabela de preços não foi encontrada!");
+            
+            double totalMinutos = (DataSaida.Value - DataEntrada).TotalMinutes;
+            int qtHoras = Convert.ToInt32(Math.Round(totalMinutos / 60, 0));
+            var resto = totalMinutos % 60;
+            if (tabela.ToleranciaMinutos < resto)
+                qtHoras++;
+            Permanencia = totalMinutos;
+            ValorTotal = tabela.Preco * qtHoras;
         }
 
         public string Placa { get; set; }
         public string Descricao { get; set; }
         public double Permanencia { get; private set; }
-        public decimal? ValorTotal { get; }
+        public decimal? ValorTotal { get; private set; }
 
     }
 }
