@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Estacionamento.DataBase.DataContext;
 using Estacionamento.Entities;
+using Estacionamento.Factories;
 using Estacionamento.Repositories;
+using Estacionamento.Services;
+using Estacionamento.UI;
+using Estacionamento.Validations;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +18,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
 
 namespace Estacionamento
 {
@@ -35,7 +45,30 @@ namespace Estacionamento
             services.AddTransient<IRepository<Veiculo>, EfRepository<Veiculo>>(); 
             services.AddTransient<IRepository<Movimentacao>, EfRepository<Movimentacao>>();
             services.AddTransient<IRepository<TabelaPreco>, EfRepository<TabelaPreco>>();
-            
+            services.AddTransient<ITabelaPrecosService, TabelaPrecoService>();
+            services.AddTransient<IValidator<TabelaPreco>, TabelaPrecoValidation>();
+            services.AddTransient<ITabelaPrecoViewModelFactory, TabelaPrecoViewModelFactory>();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("en"),
+                new CultureInfo("pt-BR"),
+                new CultureInfo("pt")
+            };
+
+                options.DefaultRequestCulture = new RequestCulture("pt-BR");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+            /*
+            services.AddMvc(config =>
+            {
+                ILoggerFactory loggerFactory = new LoggerFactory();
+                config.ModelBinderProviders.Insert(0, new InvariantDecimalModelBinderProvider(loggerFactory));
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +90,8 @@ namespace Estacionamento
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseRequestLocalization();
 
             app.UseEndpoints(endpoints =>
             {

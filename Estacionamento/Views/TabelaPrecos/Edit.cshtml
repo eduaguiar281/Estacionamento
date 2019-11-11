@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewData["Title"] = "Cadastro de Tabela de Preços";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model TabelaPreco
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Save" asp-controller="TabelaPrecos" method="post">
+    <input id="idTabela" type="hidden" asp-for="@Model.Id" step="1">
+    <div class="row">
+        <div class="col-xl-3">
+            <div class="form-group">
+                <label class="form-label" for="example-date">Data Início</label>
+                <input class="form-control" id="inicio" type="date" asp-for="@Model.Inicio">
+                <span asp-validation-for="@Model.Inicio" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-xl-3">
+            <div class="form-group">
+                <label class="form-label" for="example-date">Data Fim</label>
+                <input class="form-control" id="fim" type="date" asp-for="@Model.Fim">
+                <span asp-validation-for="@Model.Fim" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-5">
+            <div class="form-group">
+                <label class="form-label" for="example-number">Valor Hora</label>
+                <input class="form-control" id="preco" asp-for="@Model.Preco" value="@Model.Preco" asp-is-invariant="true" step="0.01">
+            </div>
+            <span asp-validation-for="@Model.Preco" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-5">
+            <div class="form-group">
+                <label class="form-label" for="example-number">Tolerância (Minutos)</label>
+                <input class="form-control" id="toleranciaMinutoas" type="number" asp-for="@Model.ToleranciaMinutos" step="1">
+            </div>
+            <span asp-validation-for="@Model.ToleranciaMinutos" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <a class="btn btn-secondary" asp-controller="TabelaPrecos" asp-action="Index" role="button">Cancelar</a>
+                <button type="submit"
+                        class="btn btn-primary">
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

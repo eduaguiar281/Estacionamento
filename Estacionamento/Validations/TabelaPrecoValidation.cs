@@ -20,12 +20,11 @@ namespace Estacionamento.Validations
                     context.AddFailure(new ValidationFailure(nameof(t.Inicio), "Data de Início não pode ser maior que a data final!"));
                     context.AddFailure(new ValidationFailure(nameof(t.Fim), "Data de Início não pode ser maior que a data final!"));
                 }
+                if (t.Preco <= 0)
+                    context.AddFailure(new ValidationFailure(nameof(t.Preco), "Preço não pode ser menor ou igual a zero!"));
+                if (t.ToleranciaMinutos <= 0)
+                    context.AddFailure(new ValidationFailure(nameof(t.ToleranciaMinutos), "Tolerância não pode ser menor ou igual a zero!"));
             });
-            RuleFor(v => v.Preco).LessThan(0).WithMessage("Preço não pode ser menor ou igual a zero!");
-            RuleFor(v => v.Preco).Equal(0).WithMessage("Preço não pode ser menor ou igual a zero!");
-            RuleFor(v => v.ToleranciaMinutos).LessThan(0).WithMessage("Tolerancia não pode ser menor ou igual a zero!");
-            RuleFor(v => v.ToleranciaMinutos).Equal(0).WithMessage("Tolerancia não pode ser menor ou igual a zero!");
-
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Estacionamento.DataBase.DataContext
         }
 
         
-        public virtual IQueryable<TEntity> Query<TEntity>() where TEntity : EntityBase
+        public new virtual IQueryable<TEntity> Query<TEntity>() where TEntity : EntityBase
         {
             return base.Set<TEntity>().AsQueryable();
         }

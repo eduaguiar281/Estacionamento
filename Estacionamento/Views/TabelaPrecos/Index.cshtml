@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "Tabela de Preços";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model TabelaPrecosViewModel
+
+<div class="alert alert-danger collapse" role="alert" id="alertError">
+    <strong>Erro!</strong> <span id="alertMessage"></span>
+</div>
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Excluir Tabela de Preço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <input type="hidden" id="IdTabela" />
+            <div class="modal-body">
+                Confirma a Exclusão?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="teste();">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="float:right; margin:0px 0px 7px 0px">
+    <a class="btn btn-primary" asp-controller="TabelaPrecos" asp-action="Create" role="button">Novo</a>
+</div>
+<br>
+@if (Model.TabelaPrecos.Count() > 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Data Início</th>
+                <th scope="col">Data Fim</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Tolerância</th>
+                <th scope="col">Alterar/Excluir</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TabelaPrecos)
+            {
+                <tr>
+                    <td scope="row">@item.Id</td>
+                    <td>@item.Inicio.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Fim.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Preco</td>
+                    <td>@item.ToleranciaMinutos minutos</td>
+                    <td>
+                        <div class="float-left">
+                            <a class="btn btn-success" style="margin:3px" asp-controller="TabelaPrecos" asp-action="Edit" asp-route-id="@item.Id" role="button">Alterar</a>
+                            <a class="btn btn-danger" style="margin:3px" role="button" onclick="excluir(@item.Id);">Excluir</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+
+    <div class="shadow p-3 mb-5 bg-white rounded" style="text-align:center; margin:25px 0px">Não há dados a exibir</div>
+}
+
+
+<script>
+    function excluir(id) {
+        var mensagem = "Excluir Tabela de Preço - ";
+        mensagem = mensagem.concat(id);
+        $("#exampleModalLongTitle").html(mensagem);
+        $("#exampleModalCenter").modal();
+        $("#IdTabela").val(id);
+    }
+    function teste() {
+        var mensagem = "Não foi possível excluir tabela de preços! (";
+        id = $("#IdTabela").val();
+        mensagem = mensagem.concat(id, ")");
+        $("#alertMessage").html(mensagem);
+        $("#alertError").fadeTo(2000, 500).slideUp(500, function () {
+            $("#alertError").slideUp(500);
+        });
+        $("#exampleModalCenter").modal('hide');
+    }
+</script>

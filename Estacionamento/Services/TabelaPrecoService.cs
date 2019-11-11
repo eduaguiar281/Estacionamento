@@ -4,39 +4,64 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Estacionamento.Entities;
+using Estacionamento.Exceptions;
+using Estacionamento.Repositories;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace Estacionamento.Services
 {
     public class TabelaPrecoService :ITabelaPrecosService
     {
-        public TabelaPrecoService()
-        {
 
+        private readonly IRepository<TabelaPreco> _repository;
+        private readonly IValidator<TabelaPreco> _validator;
+        public TabelaPrecoService(IRepository<TabelaPreco> repository, IValidator<TabelaPreco> validator)
+        {
+            _repository = repository;
+            _validator = validator;
         }
 
-        public async Task<TabelaPreco> CreateAsync(TabelaPreco data)
+        private void ValidaTabela(TabelaPreco data)
         {
-            throw new NotImplementedException();
+            var validationResults = _validator.Validate(data);
+            if (!validationResults.IsValid)
+            {
+                throw new ModelValidateException("Tabela de Preço não é Válida!", validationResults);
+            }
         }
 
-        public async Task<TabelaPreco> DeleteAsync(TabelaPreco data)
+        public async Task CreateAsync(TabelaPreco data)
         {
-            throw new NotImplementedException();
+            ValidaTabela(data);
+            await _repository.InsertAsync(data);
+        }
+
+        public async Task DeleteAsync(TabelaPreco data)
+        {
+            await  _repository.DeleteAsync(data);
         }
 
         public async Task<IList<TabelaPreco>> GetTabelasAsync()
         {
-            throw new NotImplementedException();
+            return await _repository.Table.ToListAsync();
         }
 
         public async Task<IList<TabelaPreco>> GetTabelasAsync(Expression<Func<TabelaPreco, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _repository.Table.Where(predicate).ToListAsync();
         }
 
-        public async Task<TabelaPreco> UpdateAsync(TabelaPreco data)
+        public async Task UpdateAsync(TabelaPreco data)
         {
-            throw new NotImplementedException();
+            ValidaTabela(data); 
+            await _repository.UpdateAsync(data);
+        }
+
+        public IQueryable<TabelaPreco> GetQuery()
+        {
+            return _repository.Table;
         }
     }
 }
