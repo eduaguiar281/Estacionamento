@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Estacionamento.Entities;
+using Estacionamento.Entities.Base;
 using Estacionamento.Exceptions;
 using Estacionamento.Factories;
 using Estacionamento.Services;
@@ -64,5 +65,24 @@ namespace Estacionamento.Controllers
             }
             return RedirectToAction("Index");
         }
+        
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(EntityBase tabela)
+        {
+            if (tabela == null)
+            {
+                return BadRequest("Parametro tabela não foi informado!");
+            }
+
+            var model = await _tabelaPrecoService.GetQuery().Where(t => t.Id == tabela.Id).FirstOrDefaultAsync();
+            if (model == null)
+            {
+                return NotFound("Não foi encontrado a tabela de preço informada!");
+            }
+            await _tabelaPrecoService.DeleteAsync(model);
+            return Ok();
+        }
+
     }
 }

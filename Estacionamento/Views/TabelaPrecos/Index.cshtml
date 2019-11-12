@@ -5,6 +5,8 @@
 }
 @model TabelaPrecosViewModel
 
+<form asp-action="Delete" asp-controller="TabelaPrecos" method="post"></form>
+
 <div class="alert alert-danger collapse" role="alert" id="alertError">
     <strong>Erro!</strong> <span id="alertMessage"></span>
 </div>
@@ -27,7 +29,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="teste();">Confirmar</button>
+                <button type="button" class="btn btn-primary" onclick="tabelaPrecos.confirmaExclusao();">Confirmar</button>
             </div>
         </div>
     </div>
@@ -62,7 +64,7 @@
                     <td>
                         <div class="float-left">
                             <a class="btn btn-success" style="margin:3px" asp-controller="TabelaPrecos" asp-action="Edit" asp-route-id="@item.Id" role="button">Alterar</a>
-                            <a class="btn btn-danger" style="margin:3px" role="button" onclick="excluir(@item.Id);">Excluir</a>
+                            <a class="btn btn-danger" style="margin:3px" role="button" onclick="tabelaPrecos.excluir(@item.Id);">Excluir</a>
                         </div>
                     </td>
                 </tr>
@@ -77,22 +79,4 @@ else
 }
 
 
-<script>
-    function excluir(id) {
-        var mensagem = "Excluir Tabela de Preço - ";
-        mensagem = mensagem.concat(id);
-        $("#exampleModalLongTitle").html(mensagem);
-        $("#exampleModalCenter").modal();
-        $("#IdTabela").val(id);
-    }
-    function teste() {
-        var mensagem = "Não foi possível excluir tabela de preços! (";
-        id = $("#IdTabela").val();
-        mensagem = mensagem.concat(id, ")");
-        $("#alertMessage").html(mensagem);
-        $("#alertError").fadeTo(2000, 500).slideUp(500, function () {
-            $("#alertError").slideUp(500);
-        });
-        $("#exampleModalCenter").modal('hide');
-    }
-</script>
+<script src="~/js/tabelaPrecos.js"></script>
