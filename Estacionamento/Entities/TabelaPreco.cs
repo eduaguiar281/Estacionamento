@@ -19,6 +19,7 @@ namespace Estacionamento.Entities
         public decimal Preco { get; set; }
         [DataMember]
         public int ToleranciaMinutos { get; set; }
+        public virtual ICollection<Movimentacao> Movimentacoes { get; set; }
 
     }
 }

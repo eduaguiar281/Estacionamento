@@ -67,7 +67,7 @@ namespace Estacionamento.Controllers
         }
         
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(EntityBase tabela)
         {
             if (tabela == null)

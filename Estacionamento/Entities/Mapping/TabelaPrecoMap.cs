@@ -14,7 +14,14 @@ namespace Estacionamento.Entities.Mapping
         {
             builder.ToTable($"{nameof(TabelaPreco)}s");
             builder.HasKey(k => k.Id);
+
+            builder.HasMany(a => a.Movimentacoes)
+                   .WithOne(a => a.TabelaPreco)
+                   .HasForeignKey(fk => fk.TabelaPrecoId);
+
             base.Configure(builder);
+
+
         }
     }
 }

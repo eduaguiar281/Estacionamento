@@ -19,7 +19,6 @@ namespace Estacionamento.Entities.Mapping
                    .WithOne(a => a.Veiculo)
                    .HasForeignKey(fk => fk.VeiculoId);
 
-
             base.Configure(builder);
         }
     }

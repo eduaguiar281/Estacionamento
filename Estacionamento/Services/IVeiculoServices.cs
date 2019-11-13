@@ -12,11 +12,12 @@ namespace Estacionamento.Services
         Task<IList<Veiculo>> GetTabelasAsync();
         Task<IList<Veiculo>> GetTabelasAsync(Expression<Func<Veiculo, bool>> predicate);
 
-        Task<Veiculo> CreateAsync(Veiculo data);
+        Task CreateAsync(Veiculo data);
 
-        Task<Veiculo> UpdateAsync(Veiculo data);
+        Task UpdateAsync(Veiculo data);
 
-        Task<Veiculo> DeleteAsync(Veiculo data);
+        Task DeleteAsync(Veiculo data);
 
+        IQueryable<Veiculo> GetQuery();
     }
 }

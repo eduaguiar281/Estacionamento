@@ -12,6 +12,10 @@ namespace Estacionamento.Entities
         public DateTime? Saida { get; set; }
         public Veiculo Veiculo { get; set; }
         public int VeiculoId { get; set; }
+        public int? Quantidade { get; set; }
         public decimal? Valor { get; set; }
+        public decimal? ValorTotal { get; set; }
+        public TabelaPreco TabelaPreco { get; set; }
+        public int TabelaPrecoId { get; set; }
     }
 }

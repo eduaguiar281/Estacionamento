@@ -9,57 +9,49 @@ namespace Estacionamento.ViewModel
 {
     public class MovimentacaoViewModel
     {
-        private bool _editMode;
-        private readonly ITabelaPrecosService _tabelaPrecoService;
-        public MovimentacaoViewModel(ITabelaPrecosService tabelaPrecosService, bool editMode)
+        private readonly Movimentacao _currentMovimentacao;
+        private bool _exibicao;
+        public MovimentacaoViewModel(Movimentacao movimentacao, bool exibicao)
         {
-            _tabelaPrecoService = tabelaPrecosService;
-            _editMode = editMode;
+            _currentMovimentacao = movimentacao;
+            _exibicao = exibicao;
+            Id = movimentacao.Id;
+            Placa = movimentacao.Veiculo?.Placa;
+            Descricao = movimentacao.Veiculo?.Descricao;
+            DataEntrada = movimentacao.Entrada;
+            DataSaida = movimentacao.Saida;
+            Preco = movimentacao.Valor;
+            Quantidade = movimentacao.Quantidade;
+            ValorTotal = movimentacao.ValorTotal;
+            CalculePermanencia();
         }
 
+        public int Id { get; set; }
+        public string Placa { get; set; }
+        public string Descricao { get; set; }
         public DateTime DataEntrada { get; set; }
-
-        private DateTime? _dataSaida;
-        public DateTime? DataSaida 
-        { 
-            get
-            {
-                return _dataSaida;
-            }
-            set
-            {
-                _dataSaida = value;
-                CalculePermanencia();
-            }
-        }
+        public DateTime? DataSaida { get; set; }
+        public TimeSpan? Duracao { get; set; }
+        public int? Quantidade { get; set; }
+        public decimal? Preco { get; set; }
+        public decimal? ValorTotal { get; private set; }
 
         private void CalculePermanencia()
         {
-            if (!_editMode)
+            if (!DataSaida.HasValue)
                 return;
-            if (!_dataSaida.HasValue)
-            {
-                Permanencia = 0;
-            }
+            Duracao = (DataSaida.Value - DataEntrada);
 
-            var tabela = _tabelaPrecoService.GetTabelasAsync(p => p.Inicio >= DataEntrada && p.Fim <= DataEntrada).Result.FirstOrDefault();
+            if (!_exibicao)
+                return;
 
-            if (tabela == null)
-                throw new ArgumentNullException("Tabela de preços não foi encontrada!");
-            
+            var tabela = _currentMovimentacao.TabelaPreco;
             double totalMinutos = (DataSaida.Value - DataEntrada).TotalMinutes;
             int qtHoras = Convert.ToInt32(Math.Round(totalMinutos / 60, 0));
             var resto = totalMinutos % 60;
             if (tabela.ToleranciaMinutos < resto)
                 qtHoras++;
-            Permanencia = totalMinutos;
             ValorTotal = tabela.Preco * qtHoras;
         }
-
-        public string Placa { get; set; }
-        public string Descricao { get; set; }
-        public double Permanencia { get; private set; }
-        public decimal? ValorTotal { get; private set; }
-
     }
 }

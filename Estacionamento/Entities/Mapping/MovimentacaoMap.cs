@@ -19,6 +19,11 @@ namespace Estacionamento.Entities.Mapping
                    .WithMany(s => s.Movimentacoes)
                    .HasForeignKey(fk => fk.VeiculoId);
 
+            builder.HasOne(s => s.TabelaPreco)
+                   .WithMany(s => s.Movimentacoes)
+                   .HasForeignKey(fk => fk.TabelaPrecoId);
+
+
             base.Configure(builder);
         }
     }

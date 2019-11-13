@@ -9,11 +9,12 @@ namespace Estacionamento.Services
 {
     public interface IMovimentacaoService
     {
-        Task<IList<Movimentacao>> GetTabelasAsync();
-        Task<IList<Movimentacao>> GetTabelasAsync(Expression<Func<Movimentacao, bool>> predicate);
-        Task<Movimentacao> CreateAsync(Movimentacao data);
-        Task<Movimentacao> UpdateAsync(Movimentacao data);
-        Task<Movimentacao> DeleteAsync(Movimentacao data);
+        Task<IList<Movimentacao>> GetMovimentacaoAsync();
+        Task<IList<Movimentacao>> GetMovimentacaoAsync(Expression<Func<Movimentacao, bool>> predicate);
+        Task CreateAsync(Movimentacao data);
+        Task UpdateAsync(Movimentacao data);
+        Task DeleteAsync(Movimentacao data);
+        IQueryable<Movimentacao> GetQuery();
 
     }
 }
