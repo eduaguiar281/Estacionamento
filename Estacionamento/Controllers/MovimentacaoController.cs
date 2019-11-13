@@ -14,9 +14,9 @@ namespace Estacionamento.Controllers
         {
             _factory = factory;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = _factory.CreateListaMovimentacaoViewModelAsync();
+            var model = await _factory.CreateListaMovimentacaoViewModelAsync();
             return View(model);
         }
     }

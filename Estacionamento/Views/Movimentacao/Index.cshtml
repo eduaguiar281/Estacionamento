@@ -5,68 +5,105 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="alert alert-danger collapse" role="alert" id="alertError">
+    <strong>Erro!</strong> <span id="alertMessage"></span>
+</div>
 
-<p>
-    <a asp-action="Create">Registrar Entrada</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Placa
-            </th>
-            <th>
-                Horário de Chegada
-            </th>
-            <th>
-                Horário de Saída
-            </th>
-            <th>
-                Duração
-            </th>
-            <th>
-                Horas Cobradas
-            </th>
-            <th>
-                Valor Hora
-            </th>
-            <th>
-                <strong>TOTAL</strong>
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Movimentacoes) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Placa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataEntrada)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataSaida)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duracao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantidade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Preco)
-            </td>
-            <td>
-                <strong>@Html.DisplayFor(modelItem => item.ValorTotal)</strong>
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+<h1>@ViewData["Title"]</h1>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Excluir Tabela de Preço</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <input type="hidden" id="IdTabela" />
+            <div class="modal-body">
+                Confirma a Exclusão?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="tabelaPrecos.confirmaExclusao();">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="float:right; margin:0px 0px 7px 0px">
+    <a class="btn btn-primary" asp-controller="Movimentacao" asp-action="Create" role="button">Registrar Entrada</a>
+</div>
+<br>
+
+@if (Model.Movimentacoes.Count() > 0)
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Placa
+                </th>
+                <th>
+                    Horário de Chegada
+                </th>
+                <th>
+                    Horário de Saída
+                </th>
+                <th>
+                    Duração
+                </th>
+                <th>
+                    Horas Cobradas
+                </th>
+                <th>
+                    Valor Hora
+                </th>
+                <th>
+                    <strong>TOTAL</strong>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Movimentacoes)
+            {
+                <tr>
+                    <td>
+                        @item.Placa
+                    </td>
+                    <td>
+                        @item.DataEntrada.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.DataSaida?.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.Duracao?.ToString("hh:mm:ss");
+                    </td>
+                    <td>
+                        @item.Quantidade?.ToString();
+                    </td>
+                    <td>
+                        R$ @item.Preco?.ToString("{0:N}");
+                    </td>
+                    <td>
+                        R$ <strong>@item.ValorTotal?.ToString("{0:N}")</strong>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="shadow p-3 mb-5 bg-white rounded" style="text-align:center; margin:25px 0px">Não há dados a exibir</div>
+}

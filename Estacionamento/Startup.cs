@@ -43,12 +43,14 @@ namespace Estacionamento
                      options.UseSqlServer(Configuration.GetConnectionString("Default")));
 
             services.AddTransient<IDataContext, EstacionamentoDataContext>();
-            services.AddTransient<IRepository<Veiculo>, EfRepository<Veiculo>>(); 
+            services.AddTransient<IRepository<Veiculo>, EfRepository<Veiculo>>();
+            services.AddTransient<IValidator<Veiculo>, VeiculoValidation>();
             services.AddTransient<IRepository<Movimentacao>, EfRepository<Movimentacao>>();
             services.AddTransient<IRepository<TabelaPreco>, EfRepository<TabelaPreco>>();
             services.AddTransient<ITabelaPrecosService, TabelaPrecoService>();
             services.AddTransient<IValidator<TabelaPreco>, TabelaPrecoValidation>();
             services.AddTransient<ITabelaPrecoViewModelFactory, TabelaPrecoViewModelFactory>();
+            services.AddTransient<IValidator<Movimentacao>, MovimentacaoValidation>();
             services.AddTransient<IMovimentacaoService, MovimentacaoService>();
             services.AddTransient<IVeiculoServices, VeiculoServices>();
             services.AddTransient<IValidator<EntradaVeiculoViewModel>, EntradaVeiculoViewModelValidation>();
