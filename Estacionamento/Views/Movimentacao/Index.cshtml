@@ -1,0 +1,72 @@
+﻿@model ListaMovimentacaoViewModel
+
+@{
+    ViewData["Title"] = "Estacionamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Registrar Entrada</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Placa
+            </th>
+            <th>
+                Horário de Chegada
+            </th>
+            <th>
+                Horário de Saída
+            </th>
+            <th>
+                Duração
+            </th>
+            <th>
+                Horas Cobradas
+            </th>
+            <th>
+                Valor Hora
+            </th>
+            <th>
+                <strong>TOTAL</strong>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Movimentacoes) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Placa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataEntrada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSaida)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duracao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Preco)
+            </td>
+            <td>
+                <strong>@Html.DisplayFor(modelItem => item.ValorTotal)</strong>
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Localization;
+using Estacionamento.ViewModel;
 
 namespace Estacionamento
 {
@@ -48,6 +49,10 @@ namespace Estacionamento
             services.AddTransient<ITabelaPrecosService, TabelaPrecoService>();
             services.AddTransient<IValidator<TabelaPreco>, TabelaPrecoValidation>();
             services.AddTransient<ITabelaPrecoViewModelFactory, TabelaPrecoViewModelFactory>();
+            services.AddTransient<IMovimentacaoService, MovimentacaoService>();
+            services.AddTransient<IVeiculoServices, VeiculoServices>();
+            services.AddTransient<IValidator<EntradaVeiculoViewModel>, EntradaVeiculoViewModelValidation>();
+            services.AddTransient<IMovimentacaoVeiculoViewModelFactory, MovimentacaoVeiculoViewModelFactory>();
 
             services.Configure<RequestLocalizationOptions>(options =>
             {
