@@ -15,6 +15,7 @@ namespace Estacionamento.Entities.Mapping
             builder.ToTable("Movimentacoes");
             builder.HasKey(k => k.Id);
 
+            
             builder.HasOne(s => s.Veiculo)
                    .WithMany(s => s.Movimentacoes)
                    .HasForeignKey(fk => fk.VeiculoId);
@@ -22,7 +23,7 @@ namespace Estacionamento.Entities.Mapping
             builder.HasOne(s => s.TabelaPreco)
                    .WithMany(s => s.Movimentacoes)
                    .HasForeignKey(fk => fk.TabelaPrecoId);
-
+                   
 
             base.Configure(builder);
         }

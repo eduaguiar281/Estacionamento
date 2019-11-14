@@ -15,10 +15,11 @@ namespace Estacionamento.Entities.Mapping
             builder.ToTable($"{nameof(Veiculo)}s");
             builder.HasKey(k => k.Id);
 
+            
             builder.HasMany(a => a.Movimentacoes)
                    .WithOne(a => a.Veiculo)
                    .HasForeignKey(fk => fk.VeiculoId);
-
+                   
             base.Configure(builder);
         }
     }

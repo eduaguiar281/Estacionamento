@@ -3,10 +3,19 @@
 @{
     ViewData["Title"] = "Registrar Entrada";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string classMessage = "alert alert-danger collapse";
+    if (!string.IsNullOrEmpty(Model.Mensagem))
+    {
+        classMessage = "alert alert-danger";
+    }
 }
 
 <h4>@ViewData["Title"]</h4>
 <hr />
+
+<div class="@classMessage" role="alert" id="alertError">
+    <strong>Erro!</strong>@Model.Mensagem<span id="alertMessage"></span>
+</div>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="GetVeiculo" method="post" id="frmVeiculo">
@@ -15,23 +24,20 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DataEntrada" class="control-label"></label>
-                <input asp-for="DataEntrada" type="date" class="form-control" />
+                <input id="dataEntrada" asp-for="DataEntrada" class="form-control" />
                 <span asp-validation-for="DataEntrada" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PlacaVeiculo" class="control-label"></label>
-                <input id="placaVeiculo" asp-for="PlacaVeiculo" class="form-control" onblur="movimentacao.obterVeiculo();" onkeyup="this.value = this.value.toUpperCase();"    />
+                <input id="placaVeiculo" asp-for="PlacaVeiculo" class="form-control" onblur="movimentacao.obterVeiculo();" onkeyup="this.value = this.value.toUpperCase();" />
                 <span id="placaVeiculoValidation" asp-validation-for="PlacaVeiculo" class="text-danger"></span>
             </div>
             <input id="veiculoId" type="hidden" asp-for="VeiculoId" class="form-control" />
             <div class="form-group">
                 <label asp-for="Descricao" class="control-label"></label>
-                <input id="descricao" asp-for="Descricao" class="form-control" onblur="movimentacao.obterVeiculo();"/>
+                <input id="descricao" asp-for="Descricao" class="form-control" onblur="movimentacao.obterVeiculo();" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                    <input type="submit" value="Registrar" class="btn btn-primary" />
-                </div>*@
             <div class="form-group" style="float:right;">
                 <a class="btn btn-secondary" asp-action="Index" id="btnCancel" role="button">Cancelar</a>
                 <button type="submit" id="btnSubmit"

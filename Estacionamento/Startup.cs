@@ -54,6 +54,7 @@ namespace Estacionamento
             services.AddTransient<IMovimentacaoService, MovimentacaoService>();
             services.AddTransient<IVeiculoServices, VeiculoServices>();
             services.AddTransient<IValidator<EntradaVeiculoViewModel>, EntradaVeiculoViewModelValidation>();
+            services.AddTransient<IValidator<SaidaVeiculoViewModel>, SaidaVeiculoViewModelValidation>();
             services.AddTransient<IMovimentacaoVeiculoViewModelFactory, MovimentacaoVeiculoViewModelFactory>();
 
             services.Configure<RequestLocalizationOptions>(options =>

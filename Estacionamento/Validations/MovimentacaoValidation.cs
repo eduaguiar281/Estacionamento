@@ -16,14 +16,14 @@ namespace Estacionamento.Validations
             RuleFor(v => v).Custom((m, context) => 
             {
 
-                if (m.TabelaPreco == null)
+                if (m.TabelaPrecoId == null)
                 {
-                    context.AddFailure(new ValidationFailure(nameof(m.TabelaPreco), "Tabela de Preço não foi informado!"));
+                    context.AddFailure(new ValidationFailure(nameof(m.TabelaPrecoId), "Tabela de Preço não foi informado!"));
                 }
 
-                if (m.Veiculo == null)
+                if (m.VeiculoId == null)
                 {
-                    context.AddFailure(new ValidationFailure(nameof(m.Veiculo), "Veículo não foi informado!"));
+                    context.AddFailure(new ValidationFailure(nameof(m.VeiculoId), "Veículo não foi informado!"));
                 }
 
                 if ((m.Valor ?? 0) == 0)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Estacionamento.Entities;
+using Estacionamento.Entities.Base;
 using Estacionamento.Exceptions;
 using Estacionamento.Factories;
 using Estacionamento.Services;
@@ -11,6 +12,8 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Estacionamento.Controllers
 {
@@ -18,12 +21,14 @@ namespace Estacionamento.Controllers
     {
         private readonly IMovimentacaoVeiculoViewModelFactory _factory;
         private readonly IVeiculoServices _veiculoService;
+        private readonly IMovimentacaoService _movimentacaoService;
         private readonly IValidator<Veiculo> _validator;
-        public MovimentacaoController(IMovimentacaoVeiculoViewModelFactory factory, IVeiculoServices veiculoServices, IValidator<Veiculo> validation)
+        public MovimentacaoController(IMovimentacaoVeiculoViewModelFactory factory, IVeiculoServices veiculoServices, IValidator<Veiculo> validation, IMovimentacaoService movimentacaoService)
         {
             _factory = factory;
             _veiculoService = veiculoServices;
             _validator = validation;
+            _movimentacaoService = movimentacaoService;
         }
         public async Task<IActionResult> Index()
         {
@@ -37,10 +42,47 @@ namespace Estacionamento.Controllers
             return View(model);
         }
 
+        public IActionResult Saida(int id)
+        {
+            var model = _factory.CreateSaidaVeiculoViewModel(id);
+            return View(model);
+        }
+
+        public IActionResult CalculaHora(int id, DateTime dataSaida)
+        {
+            var result = _movimentacaoService.CalculaPermanencia(id, dataSaida);
+            //Json.Serialize()
+            SaidaVeiculoViewModel vm = new SaidaVeiculoViewModel(result);
+            return Ok(JsonConvert.SerializeObject(vm));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmarSaida(SaidaVeiculoViewModel viewModel)
+        {
+            try
+            {
+                await _factory.SaveSaidaAsync(viewModel);
+            }
+            catch (ModelValidateException ex)
+            {
+                ex.Results.AddToModelState(ModelState, null);
+                return View("Saida", viewModel);
+            }
+            catch (Exception ex)
+            {
+                viewModel.Mensagem = $"Ocorreu um erro inesperado! Descricão: {ex.Message}";
+                return View("Saida", viewModel);
+            }
+            return RedirectToAction("Index");
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmarEntrada(EntradaVeiculoViewModel viewModel)
         {
+            viewModel.Mensagem = string.Empty;
             try
             {
                 await _factory.SaveEntradaAsync(viewModel);
@@ -48,6 +90,11 @@ namespace Estacionamento.Controllers
             catch (ModelValidateException ex)
             {
                 ex.Results.AddToModelState(ModelState, null);
+                return View("Registrar", viewModel);
+            }
+            catch (Exception ex)
+            {
+                viewModel.Mensagem = $"Ocorreu um erro inesperado! Descricão: {ex.Message}";
                 return View("Registrar", viewModel);
             }
             return RedirectToAction("Index");
@@ -89,6 +136,24 @@ namespace Estacionamento.Controllers
                 }
             }
             return Ok(veiculoDb);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(EntityBase movId)
+        {
+            if (movId == null)
+            {
+                return BadRequest($"Parametro {nameof(movId)} não foi informado!");
+            }
+
+            var model = await _movimentacaoService.GetQuery().Where(t => t.Id == movId.Id).FirstOrDefaultAsync();
+            if (model == null)
+            {
+                return NotFound("Não foi encontrado a movimentação informada!");
+            }
+            await _movimentacaoService.DeleteAsync(model);
+            return Ok();
         }
     }
 }

@@ -1,15 +1,18 @@
 ﻿@model ListaMovimentacaoViewModel
 
 @{
-    ViewData["Title"] = "Estacionamento";
+    ViewData["Title"] = "Movimentações";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <div class="alert alert-danger collapse" role="alert" id="alertError">
     <strong>Erro!</strong> <span id="alertMessage"></span>
 </div>
 
 <h1>@ViewData["Title"]</h1>
+
+<form asp-action="Delete" method="post"></form>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -21,13 +24,13 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <input type="hidden" id="IdTabela" />
+            <input type="hidden" id="IdMovimentacao" />
             <div class="modal-body">
                 Confirma a Exclusão?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="tabelaPrecos.confirmaExclusao();">Confirmar</button>
+                <button type="button" class="btn btn-primary" onclick="movimentacao.confirmaExclusao();">Confirmar</button>
             </div>
         </div>
     </div>
@@ -41,28 +44,31 @@
 @if (Model.Movimentacoes.Count() > 0)
 {
 
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>
+                <th scope="col">
+                    Id
+                </th>
+                <th scope="col">
                     Placa
                 </th>
-                <th>
-                    Horário de Chegada
+                <th scope="col">
+                    Entrada
                 </th>
-                <th>
-                    Horário de Saída
+                <th scope="col">
+                    Saída
                 </th>
-                <th>
+                <th scope="col">
                     Duração
                 </th>
-                <th>
-                    Horas Cobradas
+                <th scope="col">
+                    Quantidade
                 </th>
-                <th>
-                    Valor Hora
+                <th scope="col">
+                    Valor
                 </th>
-                <th>
+                <th scope="col">
                     <strong>TOTAL</strong>
                 </th>
                 <th></th>
@@ -72,31 +78,35 @@
             @foreach (var item in Model.Movimentacoes)
             {
                 <tr>
+                    <td scope="row">
+                        @item.Id
+                    </td>
                     <td>
                         @item.Placa
                     </td>
                     <td>
-                        @item.DataEntrada.ToString("dd/MM/yyyy")
+                        @item.DataEntrada.ToString("dd/MM/yyyy HH:mm")
                     </td>
                     <td>
-                        @item.DataSaida?.ToString("dd/MM/yyyy")
+                        @item.DataSaida?.ToString("dd/MM/yyyy HH:mm")
                     </td>
                     <td>
-                        @item.Duracao?.ToString("hh:mm:ss");
+                        @item.Duracao?.ToString("HH:mm:ss")
                     </td>
                     <td>
-                        @item.Quantidade?.ToString();
+                        @item.Quantidade?.ToString()
                     </td>
                     <td>
-                        R$ @item.Preco?.ToString("{0:N}");
+                        @item.Preco?.ToString("R$ 0.00")
                     </td>
                     <td>
-                        R$ <strong>@item.ValorTotal?.ToString("{0:N}")</strong>
+                        <strong>@item.ValorTotal?.ToString("R$ 0.00")</strong>
                     </td>
                     <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                        <div class="float-left">
+                            <a class="btn btn-success" style="margin:3px" asp-controller="Movimentacao" asp-action="Saida" asp-route-id="@item.Id" role="button">Saída</a>
+                            <a class="btn btn-danger" style="margin:3px" role="button" onclick="movimentacao.excluir(@item.Id);">Excluir</a>
+                        </div>
                     </td>
                 </tr>
             }
@@ -107,3 +117,5 @@ else
 {
     <div class="shadow p-3 mb-5 bg-white rounded" style="text-align:center; margin:25px 0px">Não há dados a exibir</div>
 }
+
+<script src="~/js/movimentacao.js"></script>

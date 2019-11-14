@@ -14,7 +14,7 @@ namespace Estacionamento.ViewModel
             DataEntrada = DateTime.Now;
         }
 
-        [Display(Name ="Data de Entrada")]
+        [Display(Name ="Entrada")]
         public DateTime DataEntrada { get; set; }
 
         [Display(Name = "Placa")]
@@ -25,6 +25,9 @@ namespace Estacionamento.ViewModel
 
         [Display(Name = "Descrição Veículo")]
         public string Descricao { get; set; }
+
+        [Display(Name = "Mensagem")]
+        public string Mensagem { get; set; }
 
     }
 }

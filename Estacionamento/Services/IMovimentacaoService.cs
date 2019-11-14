@@ -15,6 +15,7 @@ namespace Estacionamento.Services
         Task UpdateAsync(Movimentacao data);
         Task DeleteAsync(Movimentacao data);
         IQueryable<Movimentacao> GetQuery();
-
+        void CalculaPermanencia(Movimentacao movimentacao);
+        Movimentacao CalculaPermanencia(int id, DateTime dataSaida);
     }
 }

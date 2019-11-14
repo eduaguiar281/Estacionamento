@@ -1,0 +1,88 @@
+﻿@model Estacionamento.ViewModel.SaidaVeiculoViewModel
+
+@{
+    ViewData["Title"] = "Saida do Veículo";
+    string classMessage = "alert alert-danger collapse";
+    if (!string.IsNullOrEmpty(Model.Mensagem))
+    {
+        classMessage = "alert alert-danger";
+    }
+
+}
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+
+<div class="@classMessage" role="alert" id="alertError">
+    <strong>Erro!</strong>@Model.Mensagem<span id="alertMessage"></span>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ConfirmarSaida" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" class="form-control" type="hidden" id="idMovimentacao" />
+            <div class="row">
+                <div class="col-xl-10">
+                    <div class="form-group">
+                        <label asp-for="Entrada" class="control-label"></label>
+                        <input asp-for="Entrada" class="form-control" disabled="true" />
+                        <span asp-validation-for="Entrada" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-xl-10">
+                    <div class="form-group">
+                        <label asp-for="Saida" class="control-label"></label>
+                        <input asp-for="Saida" class="form-control" id="dataHoraSaida" onblur="movimentacao.calculaHora();" />
+                        <span asp-validation-for="Saida" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Veiculo" class="control-label"></label>
+                <input asp-for="Veiculo" class="form-control" disabled="true" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Permanencia" class="control-label"></label>
+                <input asp-for="Permanencia" class="form-control" id="permanencia" />
+            </div>
+            <div class="row">
+                <div class="col-xl-3">
+                    <div class="form-group">
+                        <label asp-for="Quantidade" class="control-label"></label>
+                        <input asp-for="Quantidade" class="form-control" id="qtde" />
+                    </div>
+                </div>
+                <div class="col-xl">
+                    <span><strong> X </strong></span>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group">
+                        <label asp-for="ValorHora" class="control-label"></label>
+                        <input asp-for="ValorHora" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-xl">
+                    <span><strong> = </strong></span>
+                </div>
+                <div class="col-xl-3">
+                    <div class="form-group">
+                        <label asp-for="Total" class="control-label"></label>
+                        <input asp-for="Total" class="form-control" id="total" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group" style="float:right">
+                    <a class="btn btn-secondary" asp-controller="Movimentacao" asp-action="Index" role="button">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/movimentacao.js"></script>
+}

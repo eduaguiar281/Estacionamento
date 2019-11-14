@@ -9,12 +9,8 @@ namespace Estacionamento.ViewModel
 {
     public class MovimentacaoViewModel
     {
-        private readonly Movimentacao _currentMovimentacao;
-        private bool _exibicao;
-        public MovimentacaoViewModel(Movimentacao movimentacao, bool exibicao)
+        public MovimentacaoViewModel(Movimentacao movimentacao)
         {
-            _currentMovimentacao = movimentacao;
-            _exibicao = exibicao;
             Id = movimentacao.Id;
             Placa = movimentacao.Veiculo?.Placa;
             Descricao = movimentacao.Veiculo?.Descricao;
@@ -23,7 +19,7 @@ namespace Estacionamento.ViewModel
             Preco = movimentacao.Valor;
             Quantidade = movimentacao.Quantidade;
             ValorTotal = movimentacao.ValorTotal;
-            CalculePermanencia();
+            CalculeDuracao();
         }
 
         public int Id { get; set; }
@@ -36,22 +32,11 @@ namespace Estacionamento.ViewModel
         public decimal? Preco { get; set; }
         public decimal? ValorTotal { get; private set; }
 
-        private void CalculePermanencia()
+        private void CalculeDuracao()
         {
             if (!DataSaida.HasValue)
                 return;
             Duracao = (DataSaida.Value - DataEntrada);
-
-            if (!_exibicao)
-                return;
-
-            var tabela = _currentMovimentacao.TabelaPreco;
-            double totalMinutos = (DataSaida.Value - DataEntrada).TotalMinutes;
-            int qtHoras = Convert.ToInt32(Math.Round(totalMinutos / 60, 0));
-            var resto = totalMinutos % 60;
-            if (tabela.ToleranciaMinutos < resto)
-                qtHoras++;
-            ValorTotal = tabela.Preco * qtHoras;
         }
     }
 }
