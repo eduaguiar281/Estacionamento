@@ -44,7 +44,7 @@ namespace Estacionamento.Controllers
 
         public IActionResult Saida(int id)
         {
-            var model = _factory.CreateSaidaVeiculoViewModel(id);
+            var model = _factory.PrepareSaidaVeiculoViewModel(id);
             return View(model);
         }
 
@@ -52,7 +52,7 @@ namespace Estacionamento.Controllers
         {
             var result = _movimentacaoService.CalculaPermanencia(id, dataSaida);
             //Json.Serialize()
-            SaidaVeiculoViewModel vm = new SaidaVeiculoViewModel(result);
+            SaidaVeiculoViewModel vm =  _factory.PrepareSaidaVeiculoViewModel(result);
             return Ok(JsonConvert.SerializeObject(vm));
         }
 
@@ -62,7 +62,8 @@ namespace Estacionamento.Controllers
         {
             try
             {
-                await _factory.SaveSaidaAsync(viewModel);
+                
+                await _factory.SaveSaidaAsync(viewModel.Id, viewModel.Saida);
             }
             catch (ModelValidateException ex)
             {

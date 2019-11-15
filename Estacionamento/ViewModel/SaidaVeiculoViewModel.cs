@@ -13,40 +13,9 @@ namespace Estacionamento.ViewModel
     [DataContract]
     public class SaidaVeiculoViewModel
     {
-
-        private void SetModel(Movimentacao mov)
-        {
-            Id = mov.Id;
-            Entrada = mov.Entrada;
-            Saida = mov.Saida ?? DateTime.Now;
-            Veiculo = $"{mov.Veiculo.Placa}- {mov.Veiculo.Descricao}";
-            Permanencia = (Saida - Entrada).ToString("hh\\:mm");
-            Quantidade = mov.Quantidade ?? 0;
-            ValorHora = mov.Valor ?? 0;
-            Total = mov.ValorTotal ?? 0;
-            Mensagem = string.Empty;
-        }
         public SaidaVeiculoViewModel()
         {
             
-        }
-
-        public SaidaVeiculoViewModel(Movimentacao mov)
-        {
-            SetModel(mov);
-        }
-        public SaidaVeiculoViewModel(int idMovimentacao, IMovimentacaoService movimentacaoService)
-        {
-            var mov = movimentacaoService.GetQuery().Include("Veiculo").Include("TabelaPreco").Where(m => m.Id == idMovimentacao).FirstOrDefault();
-            if (mov == null)
-                throw new ArgumentException($"Não foi encontrado movimentação com o id {idMovimentacao}", nameof(idMovimentacao));
-            if (!mov.Saida.HasValue)
-            {
-                Saida = DateTime.Now;
-                mov.Saida = Saida;
-                movimentacaoService.CalculaPermanencia(mov);
-            }
-            SetModel(mov);
         }
 
         [Display(Name = "Id")]

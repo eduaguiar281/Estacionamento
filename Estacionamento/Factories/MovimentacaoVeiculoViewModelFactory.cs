@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Estacionamento.Entities;
 using Estacionamento.Exceptions;
@@ -78,22 +79,49 @@ namespace Estacionamento.Factories
 
         }
 
-        public SaidaVeiculoViewModel CreateSaidaVeiculoViewModel(int idMovimentacao)
+        public SaidaVeiculoViewModel PrepareSaidaVeiculoViewModel(int idMovimentacao)
         {
-            return new SaidaVeiculoViewModel(idMovimentacao, _movimentacaoService);
+            var mov = _movimentacaoService.GetQuery().Include("Veiculo").Include("TabelaPreco").Where(m => m.Id == idMovimentacao).FirstOrDefault();
+            if (mov == null)
+                throw new ArgumentException($"Não foi encontrado movimentação com o id {idMovimentacao}", nameof(idMovimentacao));
+            return PrepareSaidaVeiculoViewModel(mov);
         }
 
-        public async Task SaveSaidaAsync(SaidaVeiculoViewModel viewModel)
+        public async Task SaveSaidaAsync(int id, DateTime dataSaida)
         {
+            var mov = _movimentacaoService.CalculaPermanencia(id, dataSaida);
+            var viewModel = PrepareSaidaVeiculoViewModel(mov);
             var results = _validatorSaida.Validate(viewModel);
             if (!results.IsValid)
                 throw new ModelValidateException("Não foi possível registrar a entrada!", results);
-            var mov = await _movimentacaoService.GetQuery().Where(x => x.Id == viewModel.Id).FirstOrDefaultAsync();
-            mov.Saida = viewModel.Saida;
-            mov.Quantidade = viewModel.Quantidade;
-            mov.ValorTotal = viewModel.Total;
             await _movimentacaoService.UpdateAsync(mov);
-
         }
+
+        public SaidaVeiculoViewModel PrepareSaidaVeiculoViewModel(Movimentacao movimentacao)
+        {
+            SaidaVeiculoViewModel viewModel = new SaidaVeiculoViewModel();
+            if (!movimentacao.Saida.HasValue)
+            {
+                viewModel.Saida = DateTime.Now;
+                movimentacao.Saida = viewModel.Saida;
+                _movimentacaoService.CalculaPermanencia(movimentacao);
+            }
+            SetSaidaVeiculoViewModel(movimentacao, ref viewModel);
+            return viewModel;
+        }
+
+        private void SetSaidaVeiculoViewModel(Movimentacao mov, ref SaidaVeiculoViewModel viewModel)
+        {
+            viewModel.Id = mov.Id;
+            viewModel.Entrada = mov.Entrada;
+            viewModel.Saida = mov.Saida ?? DateTime.Now;
+            viewModel.Veiculo = $"{mov.Veiculo.Placa}- {mov.Veiculo.Descricao}";
+            viewModel.Permanencia = (viewModel.Saida - viewModel.Entrada).ToString("hh\\:mm");
+            viewModel.Quantidade = mov.Quantidade ?? 0;
+            viewModel.ValorHora = mov.Valor ?? 0;
+            viewModel.Total = mov.ValorTotal ?? 0;
+            viewModel.Mensagem = string.Empty;
+        }
+
     }
 }

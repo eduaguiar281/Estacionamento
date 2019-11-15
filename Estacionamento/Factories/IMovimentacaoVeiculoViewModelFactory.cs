@@ -1,4 +1,5 @@
-﻿using Estacionamento.ViewModel;
+﻿using Estacionamento.Entities;
+using Estacionamento.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,13 @@ namespace Estacionamento.Factories
     {
         EntradaVeiculoViewModel CreateEntradaViewModel();
 
-        SaidaVeiculoViewModel CreateSaidaVeiculoViewModel(int idMovimentacao);
-        
+        SaidaVeiculoViewModel PrepareSaidaVeiculoViewModel(int idMovimentacao);
+
+        SaidaVeiculoViewModel PrepareSaidaVeiculoViewModel(Movimentacao movimentacao);
+
         Task SaveEntradaAsync(EntradaVeiculoViewModel viewModel);
 
-        Task SaveSaidaAsync(SaidaVeiculoViewModel viewModel);
+        Task SaveSaidaAsync(int id, DateTime dataSaida);
 
         Task<ListaMovimentacaoViewModel> CreateListaMovimentacaoViewModelAsync();
 
